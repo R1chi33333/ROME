@@ -16,16 +16,23 @@ struct StaggeredAppear: ViewModifier {
     /// Delay before the first item starts, for screens that transition in.
     var initialDelay: Double = 0
 
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
     @State private var hasAppeared = false
 
     func body(content: Content) -> some View {
         content
             .opacity(hasAppeared ? 1 : 0)
-            .offset(y: hasAppeared ? 0 : offset)
+            // Reduce Motion keeps the fade but drops the travel, and the
+            // cascade collapses to a single simultaneous appearance.
+            .offset(y: hasAppeared || reduceMotion ? 0 : offset)
             .onAppear {
+                let delay = reduceMotion
+                    ? initialDelay
+                    : initialDelay + Double(index) * stagger
                 withAnimation(
-                    .spring(response: 0.5, dampingFraction: 0.85)
-                    .delay(initialDelay + Double(index) * stagger)
+                    (reduceMotion ? AppMotion.fade : .spring(response: 0.5, dampingFraction: 0.85))
+                        .delay(delay)
                 ) {
                     hasAppeared = true
                 }

@@ -57,7 +57,14 @@ struct PlaceholderThumbnail: View {
 
     var body: some View {
         RoundedRectangle(cornerRadius: size.radius, style: .continuous)
-            .fill(tint.opacity(0.12))
+            // Opaque base under the tint. Without it the block is a wash of
+            // the same hue as the ambient background behind it and the product
+            // dissolves into the page.
+            .fill(AppColor.surface)
+            .overlay {
+                RoundedRectangle(cornerRadius: size.radius, style: .continuous)
+                    .fill(tint.opacity(0.16))
+            }
             .overlay {
                 // A hairline of the same hue keeps the block from dissolving
                 // into a white card on light backgrounds.

@@ -40,7 +40,7 @@ struct ProductDetailView: View {
             .padding(.horizontal, AppSpacing.screenGutter)
             .padding(.bottom, 140)
         }
-        .background(AppColor.background)
+        .background(AmbientBackground(tint: product.primarySpecies.tint, extent: 0.40, intensity: 0.20))
         .navigationTitle("")
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(AppColor.background, for: .navigationBar)
@@ -57,14 +57,14 @@ struct ProductDetailView: View {
 
     // MARK: - Sections
 
+    /// Fans out to match the quantity being bought, so the stepper has a
+    /// visible consequence rather than only changing a number.
     private var hero: some View {
-        PlaceholderThumbnail(
+        FannedProductStack(
             label: product.name,
             tint: product.primarySpecies.tint,
-            size: .hero
+            quantity: quantity
         )
-        .frame(maxWidth: .infinity)
-        .frame(height: 260)
         .staggeredAppear(index: 0, offset: 18)
     }
 
@@ -184,11 +184,12 @@ struct ProductDetailView: View {
         .padding(.horizontal, AppSpacing.screenGutter)
         .padding(.top, AppSpacing.md)
         .padding(.bottom, AppSpacing.md)
+        // The action bar floats over scrolling content, so it belongs to the
+        // control layer — glass rather than an opaque fill.
         .background {
-            Rectangle()
-                .fill(AppColor.background)
+            Color.clear
+                .floatingGlass(in: Rectangle())
                 .ignoresSafeArea()
-                .appShadow(.bar)
         }
         .overlay(alignment: .top) {
             if alreadyInCart > 0 {

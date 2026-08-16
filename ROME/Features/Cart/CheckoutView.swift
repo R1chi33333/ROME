@@ -14,6 +14,7 @@ struct CheckoutView: View {
 
     @Environment(CartStore.self) private var cart
     @Environment(AuthState.self) private var auth
+    @Environment(OrderActivityController.self) private var orderActivity
     @Environment(\.switchToTab) private var switchToTab
     @Environment(\.dismiss) private var dismiss
 
@@ -24,6 +25,7 @@ struct CheckoutView: View {
     @State private var deliveryOption: DeliveryOption = .standard
     @State private var phase: ButtonPhase = .idle
     @State private var didPlaceOrder = false
+    @State private var orderNumber = "FP-" + String(Int.random(in: 100000...999999))
 
     private enum DeliveryOption: String, CaseIterable, Identifiable {
         case standard = "Standard"
@@ -67,7 +69,7 @@ struct CheckoutView: View {
                 )
                 .frame(maxHeight: .infinity)
             } else if didPlaceOrder {
-                OrderConfirmationView {
+                OrderConfirmationView(orderNumber: orderNumber) {
                     // Pop first so the cart stack is left empty; switching tab
                     // first would strand this screen on the cart's path and
                     // show a confirmation for an order already finished.
@@ -169,10 +171,9 @@ struct CheckoutView: View {
             .padding(.top, AppSpacing.md)
             .padding(.bottom, AppSpacing.md)
             .background {
-                Rectangle()
-                    .fill(AppColor.background)
+                Color.clear
+                    .floatingGlass(in: Rectangle())
                     .ignoresSafeArea()
-                    .appShadow(.bar)
             }
         }
         .animation(.smooth(duration: 0.3), value: deliveryOption)
@@ -267,6 +268,14 @@ struct CheckoutView: View {
             }
             try? await Task.sleep(for: .milliseconds(500))
 
+            // Started before the cart is emptied — the activity needs the
+            // line items to name what was ordered.
+            orderActivity.start(
+                orderNumber: orderNumber,
+                items: cart.items,
+                total: orderTotal.formattedPrice
+            )
+
             cart.clear()
             withAnimation(.spring(response: 0.5, dampingFraction: 0.85)) {
                 didPlaceOrder = true
@@ -280,12 +289,10 @@ struct CheckoutView: View {
 
 private struct OrderConfirmationView: View {
 
+    let orderNumber: String
     let onDone: () -> Void
 
     @State private var hasAppeared = false
-    /// Generated once. A computed property here would draw a new number on
-    /// every redraw.
-    @State private var orderNumber = "FP-" + String(Int.random(in: 100000...999999))
 
     var body: some View {
         VStack(spacing: AppSpacing.xl) {

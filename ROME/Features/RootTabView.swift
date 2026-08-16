@@ -122,18 +122,16 @@ private struct AppTabBar: View {
     @Namespace private var namespace
 
     var body: some View {
-        HStack(spacing: 0) {
-            ForEach(RootTabView.Tab.allCases) { tab in
-                tabButton(tab)
+        GlassEffectContainer(spacing: 18) {
+            HStack(spacing: 0) {
+                ForEach(RootTabView.Tab.allCases) { tab in
+                    tabButton(tab)
+                }
             }
         }
         .padding(.horizontal, AppSpacing.sm)
         .padding(.vertical, AppSpacing.sm)
-        .background(
-            Capsule()
-                .fill(AppColor.surface)
-                .appShadow(.card)
-        )
+        .floatingGlass(in: Capsule())
         .padding(.horizontal, AppSpacing.screenGutter)
         .padding(.bottom, AppSpacing.sm)
     }
@@ -234,7 +232,7 @@ private struct ToastView: View {
         }
         .padding(.horizontal, AppSpacing.lg)
         .padding(.vertical, AppSpacing.md)
-        .background(Capsule().fill(AppColor.ink))
+        .floatingGlass(in: Capsule(), tinted: AppColor.ink.opacity(0.6))
         .appShadow(.raised)
     }
 }

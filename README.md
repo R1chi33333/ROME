@@ -16,7 +16,7 @@ SwiftUI · iOS 26 · No third-party dependencies
 
 <img src="docs/demo.gif" width="300" alt="Walkthrough: browsing as a guest, pull to refresh, adding to the cart, and signing in at the My Pets gate">
 
-<sub><i>Guest browsing → pull to refresh → cart → the account gate at My Pets.<br>Recorded by a UI test driving the real app — see <a href="docs/record-demo.sh">docs/record-demo.sh</a>.</i></sub>
+<sub><i>Pull to refresh → ambient colour following the species → the quantity fan → checkout → the Live Activity.<br>Recorded by a UI test driving the real app — see <a href="docs/record-demo.sh">docs/record-demo.sh</a>.</i></sub>
 
 </div>
 
@@ -29,6 +29,11 @@ SwiftUI · iOS 26 · No third-party dependencies
 | <img src="docs/screenshots/05-cart.png" width="200"> | <img src="docs/screenshots/06-order-placed.png" width="200"> | <img src="docs/screenshots/07-my-pets.png" width="200"> | <img src="docs/screenshots/08-guest-gate.png" width="200"> |
 | Cart | Order placed | My Pets | Guest gate |
 
+<div align="center">
+<img src="docs/screenshots/09-dynamic-island.png" width="420" alt="The order's Live Activity in the Dynamic Island, counting down">
+<br><sub><i>The order continues on the Dynamic Island after the app is closed.</i></sub>
+</div>
+
 ---
 
 ## What it does
@@ -38,6 +43,8 @@ SwiftUI · iOS 26 · No third-party dependencies
 - **My Pets** — name, species, breed, weight, birthday, neutered status and free-text notes
 - **Guest mode** — browsing is open to everyone; an account is only required to save something
 - **Pull to refresh** with a paw that grips the top of the list, holds it open while the work runs, then lets go
+- **Live Activity** on the Dynamic Island tracking the order from packing to doorstep
+- **Liquid Glass** on the floating control layer, and an ambient background that takes its colour from whatever is on screen
 
 ## Running it
 
@@ -58,6 +65,9 @@ ROME/
 ├── Data/             DataStore protocol + in-memory implementation
 ├── State/            @Observable stores: Auth, Cart, Pets, Favorites
 └── Features/         One folder per tab, plus the auth flow
+
+ROMEShared/           ActivityAttributes, compiled into both targets
+ROMEWidgets/          Widget extension: Live Activity and Dynamic Island
 ```
 
 **Every visual value comes from a token.** There are no hardcoded colours, sizes or corner radii in feature code — a component that needs a new value gets it added to the token set rather than inlined.
@@ -132,6 +142,36 @@ This is also why product cards have no separate title line under the thumbnail: 
 </details>
 
 <details>
+<summary><b>The quantity fan is one <code>HStack</code> with negative spacing</b></summary>
+
+<br>
+
+Changing the quantity spreads copies of the product out from behind the front one. There is no per-copy offset arithmetic behind it — the whole effect is a stack whose spacing animates from a negative value to a smaller one:
+
+```swift
+HStack(spacing: visibleCount <= 1 ? -36 : -12) { … }
+```
+
+Negative spacing makes siblings overlap, so at rest the copies hide behind the front one; animating the spacing spreads them. Layout does the work and the spring only has one number to ride. Depth comes from scale, brightness and `zIndex` falling off with distance from the middle.
+
+Past five copies the fan stops reading as a quantity and starts reading as clutter, so the remainder becomes a `+N` badge.
+
+</details>
+
+<details>
+<summary><b>Where Liquid Glass is — and is not</b></summary>
+
+<br>
+
+Glass belongs to the layer that floats above content, so it is on the tab bar, the bottom action bars and the toast. It is deliberately **not** on product cards, pet cards or the detail info card: those are content, and putting glass on them makes glass on glass, which the HIG calls out directly.
+
+The tab bar's selected pill and the bar itself are sibling glass shapes, so they sit inside a `GlassEffectContainer` — without it each samples the background independently and you get two stacked materials instead of one blended surface.
+
+Adding the ambient background surfaced a bug this made obvious: `PlaceholderThumbnail` was a wash of the species tint, and the field behind it is the *same* tint, so products dissolved into the page. The thumbnail now has an opaque base under its tint and reads as an object against anything.
+
+</details>
+
+<details>
 <summary><b>The tab bar hides on pushed screens</b></summary>
 
 <br>
@@ -158,6 +198,8 @@ xcodebuild test -scheme ROME \
 | `DemoRecordingTests` | not a test — the paced script behind the walkthrough above |
 
 Several real defects surfaced this way rather than by inspection: the tab bar swallowing taps, a text field made invisible to the accessibility tree by `opacity(0)`, prices rendering as `US$10.50` under a non-US locale, and a duplicated product name on every card.
+
+> One trap worth recording: `docs/record-demo.sh` passes `-parallel-testing-enabled NO`. With parallel testing on, Xcode runs the app inside a `Clone N of <device>` simulator while `simctl` records the original — which yields a few seconds of an idle home screen instead of a walkthrough.
 
 ## Scope
 

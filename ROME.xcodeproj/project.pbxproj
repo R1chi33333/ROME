@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		AA01B00000000000000009 /* ROMEWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = AA01B00000000000000002 /* ROMEWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		43F05D20303115A80047CB1F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -21,12 +25,34 @@
 			remoteGlobalIDString = 43F05D11303115A70047CB1F;
 			remoteInfo = ROME;
 		};
+		AA01B0000000000000000B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 43F05D0A303115A70047CB1F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AA01B00000000000000001;
+			remoteInfo = ROMEWidgets;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		AA01B00000000000000008 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				AA01B00000000000000009 /* ROMEWidgets.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		43F05D12303115A70047CB1F /* ROME.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ROME.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		43F05D1F303115A80047CB1F /* ROMETests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ROMETests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		43F05D29303115A80047CB1F /* ROMEUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ROMEUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA01B00000000000000002 /* ROMEWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ROMEWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -43,6 +69,16 @@
 		43F05D2C303115A80047CB1F /* ROMEUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = ROMEUITests;
+			sourceTree = "<group>";
+		};
+		AA01B00000000000000003 /* ROMEWidgets */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = ROMEWidgets;
+			sourceTree = "<group>";
+		};
+		AA01B00000000000000004 /* ROMEShared */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = ROMEShared;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -69,6 +105,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		AA01B00000000000000006 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -78,6 +121,8 @@
 				43F05D14303115A70047CB1F /* ROME */,
 				43F05D22303115A80047CB1F /* ROMETests */,
 				43F05D2C303115A80047CB1F /* ROMEUITests */,
+				AA01B00000000000000004 /* ROMEShared */,
+				AA01B00000000000000003 /* ROMEWidgets */,
 				43F05D13303115A70047CB1F /* Products */,
 			);
 			sourceTree = "<group>";
@@ -88,6 +133,7 @@
 				43F05D12303115A70047CB1F /* ROME.app */,
 				43F05D1F303115A80047CB1F /* ROMETests.xctest */,
 				43F05D29303115A80047CB1F /* ROMEUITests.xctest */,
+				AA01B00000000000000002 /* ROMEWidgets.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -102,13 +148,16 @@
 				43F05D0E303115A70047CB1F /* Sources */,
 				43F05D0F303115A70047CB1F /* Frameworks */,
 				43F05D10303115A70047CB1F /* Resources */,
+				AA01B00000000000000008 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				AA01B0000000000000000A /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				43F05D14303115A70047CB1F /* ROME */,
+				AA01B00000000000000004 /* ROMEShared */,
 			);
 			name = ROME;
 			packageProductDependencies = (
@@ -155,6 +204,8 @@
 			);
 			fileSystemSynchronizedGroups = (
 				43F05D2C303115A80047CB1F /* ROMEUITests */,
+				AA01B00000000000000003 /* ROMEWidgets */,
+				AA01B00000000000000004 /* ROMEShared */,
 			);
 			name = ROMEUITests;
 			packageProductDependencies = (
@@ -162,6 +213,29 @@
 			productName = ROMEUITests;
 			productReference = 43F05D29303115A80047CB1F /* ROMEUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		AA01B00000000000000001 /* ROMEWidgets */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AA01B0000000000000000C /* Build configuration list for PBXNativeTarget "ROMEWidgets" */;
+			buildPhases = (
+				AA01B00000000000000005 /* Sources */,
+				AA01B00000000000000006 /* Frameworks */,
+				AA01B00000000000000007 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				AA01B00000000000000003 /* ROMEWidgets */,
+				AA01B00000000000000004 /* ROMEShared */,
+			);
+			name = ROMEWidgets;
+			packageProductDependencies = (
+			);
+			productName = ROMEWidgets;
+			productReference = AA01B00000000000000002 /* ROMEWidgets.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -203,6 +277,7 @@
 				43F05D11303115A70047CB1F /* ROME */,
 				43F05D1E303115A80047CB1F /* ROMETests */,
 				43F05D28303115A80047CB1F /* ROMEUITests */,
+				AA01B00000000000000001 /* ROMEWidgets */,
 			);
 		};
 /* End PBXProject section */
@@ -223,6 +298,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		43F05D27303115A80047CB1F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AA01B00000000000000007 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -253,6 +335,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		AA01B00000000000000005 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -265,6 +354,11 @@
 			isa = PBXTargetDependency;
 			target = 43F05D11303115A70047CB1F /* ROME */;
 			targetProxy = 43F05D2A303115A80047CB1F /* PBXContainerItemProxy */;
+		};
+		AA01B0000000000000000A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AA01B00000000000000001 /* ROMEWidgets */;
+			targetProxy = AA01B0000000000000000B /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -398,6 +492,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = ROME;
+				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -430,6 +525,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = ROME;
+				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -532,6 +628,61 @@
 			};
 			name = Release;
 		};
+		AA01B0000000000000000D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Config/ROMEWidgets-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = ROMEWidgets;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yutongjin.rome.widgets;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		AA01B0000000000000000E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Config/ROMEWidgets-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = ROMEWidgets;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yutongjin.rome.widgets;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -567,6 +718,15 @@
 			buildConfigurations = (
 				43F05D3A303115A80047CB1F /* Debug */,
 				43F05D3B303115A80047CB1F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AA01B0000000000000000C /* Build configuration list for PBXNativeTarget "ROMEWidgets" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AA01B0000000000000000D /* Debug */,
+				AA01B0000000000000000E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

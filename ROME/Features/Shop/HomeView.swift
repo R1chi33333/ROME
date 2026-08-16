@@ -101,7 +101,7 @@ struct HomeView: View {
             .padding(.top, AppSpacing.sm)
             .padding(.bottom, .tabBarClearance)
         }
-        .background(AppColor.background)
+        .background(AmbientBackground(tint: ambientTint, extent: 0.42, intensity: 0.26))
         .navigationBarHidden(true)
         .shopNavigationDestinations()
         .sheet(isPresented: $isPromptingSignIn) {
@@ -258,6 +258,12 @@ struct HomeView: View {
 
     private var sectionSubtitle: String? {
         isLoading ? nil : "\(visibleProducts.count) items"
+    }
+
+    /// Neutral until a species is chosen; after that the page carries that
+    /// animal's colour.
+    private var ambientTint: Color {
+        selectedSpecies?.tint ?? AppColor.accent
     }
 
     private var promoHeadline: String {

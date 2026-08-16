@@ -31,6 +31,8 @@ struct PawRefreshScrollView<Content: View>: View {
     /// Drives the paw's own release animation, independent of the content.
     @State private var pawOpening: CGFloat = 0
     @State private var pawLift: CGFloat = 0
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
     /// Where the paw was when it opened its toes. Held so that the content can
     /// spring away from underneath it — following `revealed` here would drag
     /// the paw home with the content, which is the opposite of letting go.
@@ -126,7 +128,7 @@ struct PawRefreshScrollView<Content: View>: View {
 
     private func startRefresh() {
         stage = .holding
-        withAnimation(.spring(response: 0.32, dampingFraction: 0.82)) {
+        withAnimation(AppMotion.standard(reduceMotion)) {
             heldHeight = holdHeight
         }
 
@@ -152,7 +154,7 @@ struct PawRefreshScrollView<Content: View>: View {
         try? await Task.sleep(for: .milliseconds(110))
 
         // Content is loose — low damping so it visibly overshoots and settles.
-        withAnimation(.spring(response: 0.5, dampingFraction: 0.55)) {
+        withAnimation(AppMotion.bouncy(reduceMotion)) {
             heldHeight = 0
         }
         // The paw hangs where it let go for a beat, then withdraws upward.

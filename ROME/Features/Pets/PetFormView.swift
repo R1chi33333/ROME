@@ -100,10 +100,9 @@ struct PetFormView: View {
                 .padding(.top, AppSpacing.md)
                 .padding(.bottom, AppSpacing.md)
                 .background {
-                    Rectangle()
-                        .fill(AppColor.background)
+                    Color.clear
+                        .floatingGlass(in: Rectangle())
                         .ignoresSafeArea()
-                        .appShadow(.bar)
                 }
             }
             .onAppear(perform: populate)

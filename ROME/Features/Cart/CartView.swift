@@ -155,11 +155,12 @@ struct CartView: View {
         // Clears the floating tab bar, which stays visible on this screen
         // because the cart is a tab root.
         .padding(.bottom, .tabBarClearance)
+        // The action bar floats over scrolling content, so it belongs to the
+        // control layer — glass rather than an opaque fill.
         .background {
-            Rectangle()
-                .fill(AppColor.background)
+            Color.clear
+                .floatingGlass(in: Rectangle())
                 .ignoresSafeArea()
-                .appShadow(.bar)
         }
         .animation(.smooth(duration: 0.3), value: cart.total)
     }

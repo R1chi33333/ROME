@@ -23,6 +23,7 @@ struct QuantityStepper: View {
             stepButton(icon: "minus", enabled: quantity > minimum) {
                 quantity -= 1
             }
+            .accessibilityIdentifier("decrement-quantity")
 
             Text("\(quantity)")
                 .font(compact ? AppFont.subheadline : AppFont.bodyMedium)
@@ -34,6 +35,7 @@ struct QuantityStepper: View {
             stepButton(icon: "plus", enabled: quantity < maximum) {
                 quantity += 1
             }
+            .accessibilityIdentifier("increment-quantity")
         }
         .padding(.horizontal, compact ? AppSpacing.sm : AppSpacing.md)
         .padding(.vertical, compact ? AppSpacing.xs : AppSpacing.sm)

@@ -12,11 +12,15 @@ struct PressableStyle: ButtonStyle {
     var scale: CGFloat = 0.96
     var dims: Bool = true
 
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .scaleEffect(configuration.isPressed ? scale : 1)
+            // Under Reduce Motion the press still has to acknowledge itself,
+            // so the dim stays and only the scale is dropped.
+            .scaleEffect(configuration.isPressed && !reduceMotion ? scale : 1)
             .opacity(configuration.isPressed && dims ? 0.85 : 1)
-            .animation(.spring(response: 0.3, dampingFraction: 0.6), value: configuration.isPressed)
+            .animation(AppMotion.snappy(reduceMotion), value: configuration.isPressed)
     }
 }
 

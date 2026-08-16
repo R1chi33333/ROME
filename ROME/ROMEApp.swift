@@ -18,6 +18,7 @@ struct ROMEApp: App {
     @State private var cart = CartStore()
     @State private var favorites = FavoritesStore()
     @State private var pets: PetStore
+    @State private var orderActivity = OrderActivityController()
 
     init() {
         let store = MockDataStore()
@@ -32,6 +33,7 @@ struct ROMEApp: App {
                 .environment(cart)
                 .environment(favorites)
                 .environment(pets)
+                .environment(orderActivity)
                 .environment(\.dataStore, dataStore)
                 .tint(AppColor.accent)
         }
