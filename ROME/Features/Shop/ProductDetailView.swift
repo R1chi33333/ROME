@@ -14,6 +14,8 @@ struct ProductDetailView: View {
     @Environment(CartStore.self) private var cart
     @Environment(FavoritesStore.self) private var favorites
     @Environment(\.showToast) private var showToast
+    @Environment(FlightCoordinator.self) private var flights
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     @State private var selectedVariant: String?
     @State private var quantity = 1
@@ -21,6 +23,8 @@ struct ProductDetailView: View {
     private var alreadyInCart: Int {
         cart.quantity(of: product, variant: selectedVariant)
     }
+
+    @State private var heroFrame: CGRect = .zero
 
     var body: some View {
         ScrollView {
@@ -49,6 +53,9 @@ struct ProductDetailView: View {
                 FavoriteButton(isFavorite: favorites.binding(for: product))
             }
         }
+        .onGlobalFrames { frames in
+            if let frame = frames["detail-hero"] { heroFrame = frame }
+        }
         .safeAreaInset(edge: .bottom) { addToCartBar }
         .onAppear {
             if selectedVariant == nil { selectedVariant = product.variants.first }
@@ -66,6 +73,7 @@ struct ProductDetailView: View {
             quantity: quantity
         )
         .staggeredAppear(index: 0, offset: 18)
+        .reportsGlobalFrame("detail-hero")
     }
 
     private var titleBlock: some View {
@@ -174,10 +182,21 @@ struct ProductDetailView: View {
             QuantityStepper(quantity: $quantity)
 
             PrimaryButton(title: "Add to Cart", icon: "bag.fill") {
-                cart.add(product, variant: selectedVariant, quantity: quantity)
-                showToast(
-                    ToastMessage(text: "\(quantity) × \(product.name) added to cart")
+                // Launch first: the parcel leaves from where the hero is now,
+                // before the quantity resets and the fan collapses under it.
+                flights.send(
+                    label: product.name,
+                    tint: product.primarySpecies.tint,
+                    from: heroFrame
                 )
+                // The flight is the confirmation. With it suppressed, the same
+                // message has to arrive some other way.
+                if reduceMotion {
+                    showToast(
+                        ToastMessage(text: "\(quantity) × \(product.name) added to cart")
+                    )
+                }
+                cart.add(product, variant: selectedVariant, quantity: quantity)
                 quantity = 1
             }
         }

@@ -8,6 +8,9 @@
 
 SwiftUI · iOS 26 · No third-party dependencies
 
+**[Read the design case study →](https://claude.ai/code/artifact/c8191ab2-e0e9-44d8-ac16-abc3082ff307)**
+<br><sub>The interaction work, the measurement that changed the button system, and the bug that made the product disappear.</sub>
+
 </div>
 
 ---

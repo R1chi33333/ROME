@@ -177,7 +177,8 @@ struct PetDetailView: View {
                 .font(AppFont.button)
                 .foregroundStyle(AppColor.error)
                 .frame(maxWidth: .infinity)
-                .frame(height: 54)
+                .frame(minHeight: 54)
+                .padding(.vertical, AppSpacing.sm)
                 .background(
                     RoundedRectangle(cornerRadius: AppRadius.base, style: .continuous)
                         .fill(AppColor.error.opacity(0.08))

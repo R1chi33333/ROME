@@ -49,6 +49,7 @@ struct WelcomeView: View {
                         HStack(spacing: AppSpacing.xs) {
                             Text("Browse as guest")
                                 .font(AppFont.subheadline)
+                                .fixedSize(horizontal: false, vertical: true)
                             Image(systemName: "arrow.right")
                                 .font(.system(size: 12, weight: .semibold))
                         }
@@ -64,6 +65,7 @@ struct WelcomeView: View {
                         .font(AppFont.caption)
                         .foregroundStyle(AppColor.textTertiary)
                         .multilineTextAlignment(.center)
+                        .fixedSize(horizontal: false, vertical: true)
                         .staggeredAppear(index: 4, initialDelay: 0.15)
                 }
                 .padding(.horizontal, AppSpacing.screenGutter)

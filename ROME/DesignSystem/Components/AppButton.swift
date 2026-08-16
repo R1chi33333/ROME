@@ -50,7 +50,10 @@ struct PrimaryButton: View {
                 }
             }
             .frame(maxWidth: fillsWidth ? .infinity : nil)
-            .frame(height: 54)
+            // minHeight, not height: the label grows with Dynamic Type and a
+            // fixed box clips it.
+            .frame(minHeight: 54)
+            .padding(.vertical, AppSpacing.sm)
             .padding(.horizontal, fillsWidth ? 0 : AppSpacing.xl)
             .background(
                 RoundedRectangle(cornerRadius: AppRadius.base, style: .continuous)
@@ -71,6 +74,8 @@ struct PrimaryButton: View {
             }
             Text(title)
                 .font(AppFont.button)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
         }
         .foregroundStyle(AppColor.onInk)
     }
@@ -96,10 +101,15 @@ struct SecondaryButton: View {
                 }
                 Text(title)
                     .font(AppFont.button)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
             }
             .foregroundStyle(AppColor.textPrimary)
             .frame(maxWidth: fillsWidth ? .infinity : nil)
-            .frame(height: 54)
+            // minHeight, not height: the label grows with Dynamic Type and a
+            // fixed box clips it.
+            .frame(minHeight: 54)
+            .padding(.vertical, AppSpacing.sm)
             .padding(.horizontal, fillsWidth ? 0 : AppSpacing.xl)
             .background(
                 RoundedRectangle(cornerRadius: AppRadius.base, style: .continuous)

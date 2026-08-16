@@ -72,7 +72,8 @@ struct AppTextField: View {
             }
         }
         .padding(.horizontal, AppSpacing.lg)
-        .frame(height: 62)
+        .padding(.vertical, AppSpacing.md)
+        .frame(minHeight: 62)
         .background(
             RoundedRectangle(cornerRadius: AppRadius.base, style: .continuous)
                 .fill(AppColor.surfaceSunken)

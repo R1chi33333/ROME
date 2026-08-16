@@ -47,6 +47,18 @@ struct PetCard: View {
                 .foregroundStyle(AppColor.textTertiary)
         }
         .cardStyle()
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(spokenLabel)
+    }
+
+    /// "Mochi, British Shorthair, 4.6 kg, neutered" — one sentence, in the
+    /// order the card reads visually.
+    private var spokenLabel: String {
+        var parts = [pet.name, pet.species.displayName]
+        if !pet.breed.isEmpty { parts.append(pet.breed) }
+        if pet.weightKg > 0 { parts.append(pet.formattedWeight) }
+        if pet.isNeutered { parts.append("neutered") }
+        return parts.joined(separator: ", ")
     }
 }
 
@@ -111,6 +123,7 @@ struct DetailRow: View {
             Text(label)
                 .font(AppFont.callout)
                 .foregroundStyle(AppColor.textSecondary)
+                .fixedSize(horizontal: false, vertical: true)
 
             Spacer(minLength: AppSpacing.md)
 

@@ -42,6 +42,14 @@ final class AuthState {
     private(set) var session: Session = .signedOut
     private(set) var phase: Phase = .idle
 
+    /// Set when an account is created, cleared once the flow is finished or
+    /// skipped. Signing in to an existing account never raises it — onboarding
+    /// asks for things that account would already have.
+    private(set) var needsOnboarding = false
+
+    /// Species chosen during onboarding, so the shop can open already filtered.
+    private(set) var onboardingSpecies: PetSpecies?
+
     /// True for guests as well — this is "may see the app", not "has an
     /// account". Use `isSignedIn` to gate anything that needs an account.
     var hasEntered: Bool { session != .signedOut }
@@ -53,6 +61,16 @@ final class AuthState {
     var currentUser: UserAccount? {
         if case .signedIn(let user) = session { return user }
         return nil
+    }
+
+    /// Test hook. iOS's AutoFill overlay intercepts typing into a
+    /// `.newPassword` field, which makes driving the real sign-up form from a
+    /// UI test unreliable — so tests that need a freshly created account ask
+    /// for one directly. Nothing reads this outside a test launch.
+    func startAsNewAccountForTesting() {
+        guard ProcessInfo.processInfo.arguments.contains("-uiTestNewAccount") else { return }
+        session = .signedIn(UserAccount(name: "Yutong Jin", email: "yutong.jin@example.com"))
+        needsOnboarding = true
     }
 
     /// How long the fake request "takes". Long enough to see the loading dots,
@@ -70,6 +88,21 @@ final class AuthState {
         await runFakeRequest {
             UserAccount(name: name.isEmpty ? Self.nameFromEmail(email) : name, email: email)
         }
+        needsOnboarding = true
+    }
+
+    func finishOnboarding(species: PetSpecies?) {
+        onboardingSpecies = species
+        withAnimation(.smooth(duration: 0.4)) {
+            needsOnboarding = false
+        }
+    }
+
+    /// Read once by the shop, then cleared, so returning to the tab later does
+    /// not silently re-apply a filter the user has since changed.
+    func consumeOnboardingSpecies() -> PetSpecies? {
+        defer { onboardingSpecies = nil }
+        return onboardingSpecies
     }
 
     /// Enters the app without an account. Instant — there is nothing to wait
@@ -86,6 +119,8 @@ final class AuthState {
             session = .signedOut
         }
         phase = .idle
+        needsOnboarding = false
+        onboardingSpecies = nil
     }
 
     // MARK: - Private

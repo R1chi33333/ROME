@@ -24,6 +24,10 @@ struct PetFormView: View {
     @State private var isNeutered = false
     @State private var notes = ""
 
+    /// Grid cells have to grow with their labels; a fixed minimum truncates
+    /// "Amphibian" to "A…" at accessibility sizes.
+    @ScaledMetric(relativeTo: .subheadline) private var speciesTileMinWidth: CGFloat = 104
+
     private var isEditing: Bool { pet != nil }
 
     private var canSave: Bool {
@@ -141,7 +145,7 @@ struct PetFormView: View {
 
     private var speciesGrid: some View {
         LazyVGrid(
-            columns: [GridItem(.adaptive(minimum: 100), spacing: AppSpacing.sm)],
+            columns: [GridItem(.adaptive(minimum: speciesTileMinWidth), spacing: AppSpacing.sm)],
             spacing: AppSpacing.sm
         ) {
             ForEach(PetSpecies.allCases) { option in
@@ -164,6 +168,7 @@ struct PetFormView: View {
                 Text(option.displayName)
                     .font(AppFont.chip)
                     .lineLimit(1)
+                    .minimumScaleFactor(0.75)
             }
             .foregroundStyle(isSelected ? AppColor.accentText : AppColor.textSecondary)
             .frame(maxWidth: .infinity)
@@ -197,7 +202,8 @@ struct PetFormView: View {
             }
             .tint(AppColor.accent)
             .padding(.horizontal, AppSpacing.lg)
-            .frame(height: 62)
+            .frame(minHeight: 62)
+            .padding(.vertical, AppSpacing.md)
             .background(
                 RoundedRectangle(cornerRadius: AppRadius.base, style: .continuous)
                     .fill(AppColor.surfaceSunken)
@@ -213,7 +219,8 @@ struct PetFormView: View {
                 .datePickerStyle(.compact)
                 .tint(AppColor.accent)
                 .padding(.horizontal, AppSpacing.lg)
-                .frame(height: 62)
+                .frame(minHeight: 62)
+                .padding(.vertical, AppSpacing.md)
                 .background(
                     RoundedRectangle(cornerRadius: AppRadius.base, style: .continuous)
                         .fill(AppColor.surfaceSunken)
@@ -244,7 +251,8 @@ struct PetFormView: View {
         }
         .tint(AppColor.accent)
         .padding(.horizontal, AppSpacing.lg)
-        .frame(height: 68)
+        .frame(minHeight: 68)
+        .padding(.vertical, AppSpacing.md)
         .background(
             RoundedRectangle(cornerRadius: AppRadius.base, style: .continuous)
                 .fill(AppColor.surfaceSunken)

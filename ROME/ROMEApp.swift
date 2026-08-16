@@ -49,7 +49,12 @@ private struct RootView: View {
         ZStack {
             // Guests get the same shell as signed-in users; the difference
             // shows up only where an account is actually required.
-            if auth.hasEntered {
+            if auth.hasEntered && auth.needsOnboarding {
+                OnboardingView { species in
+                    auth.finishOnboarding(species: species)
+                }
+                .transition(.opacity.combined(with: .scale(scale: 1.02)))
+            } else if auth.hasEntered {
                 RootTabView()
                     .transition(.opacity.combined(with: .scale(scale: 1.02)))
             } else {
@@ -58,6 +63,8 @@ private struct RootView: View {
             }
         }
         .background(AppColor.background)
+        .task { auth.startAsNewAccountForTesting() }
         .animation(.smooth(duration: 0.4), value: auth.hasEntered)
+        .animation(.smooth(duration: 0.4), value: auth.needsOnboarding)
     }
 }

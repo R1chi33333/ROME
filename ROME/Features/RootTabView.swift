@@ -28,6 +28,11 @@ struct RootTabView: View {
     @State private var petsPath = NavigationPath()
     @State private var profilePath = NavigationPath()
 
+    /// Shared by every product card and the detail screen it opens.
+    @Namespace private var productZoom
+
+    @State private var flights = FlightCoordinator()
+
     private var isAtTabRoot: Bool {
         switch selection {
         case .shop: return shopPath.isEmpty
@@ -65,13 +70,34 @@ struct RootTabView: View {
         ZStack(alignment: .bottom) {
             content
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .environment(\.productZoomNamespace, productZoom)
+                .environment(flights)
 
-            if isAtTabRoot {
+            // The bar also rises to receive a parcel. On a pushed screen it
+            // is normally hidden, and a package flying into empty space reads
+            // as a bug — so the destination comes up to meet it.
+            if isAtTabRoot || flights.flight != nil {
                 AppTabBar(selection: $selection, cartCount: cart.itemCount)
                     .transition(.move(edge: .bottom).combined(with: .opacity))
             }
         }
+        // Frames are collected at the shell, because the parcel has to travel
+        // between two views that never meet in the hierarchy: a hero on a
+        // pushed screen, and a tab in the bar outside the stack.
+        .onGlobalFrames { frames in
+            if let cartFrame = frames["cart-tab"] {
+                flights.destination = cartFrame
+            }
+        }
+        .overlay {
+            if let flight = flights.flight {
+                FlyingParcel(flight: flight, destination: flights.destination) {
+                    flights.complete()
+                }
+            }
+        }
         .animation(.smooth(duration: 0.28), value: isAtTabRoot)
+        .animation(.spring(response: 0.34, dampingFraction: 0.8), value: flights.flight)
         .background(AppColor.background)
         .ignoresSafeArea(.keyboard)
         .overlay(alignment: .top) {
@@ -134,6 +160,10 @@ private struct AppTabBar: View {
         .floatingGlass(in: Capsule())
         .padding(.horizontal, AppSpacing.screenGutter)
         .padding(.bottom, AppSpacing.sm)
+        // Four labels across a fixed-width bar have nowhere to grow. The HIG
+        // allows a tab bar to cap Dynamic Type for exactly this reason; the
+        // rest of the app is uncapped.
+        .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
     }
 
     private func tabButton(_ tab: RootTabView.Tab) -> some View {
@@ -158,9 +188,10 @@ private struct AppTabBar: View {
                 }
 
                 Text(tab.title)
-                    .font(.system(size: 10, weight: .semibold, design: AppFont.design))
+                    .font(.caption2.weight(.semibold))
                     .foregroundStyle(isSelected ? AppColor.accentText : AppColor.textTertiary)
             }
+            .reportsGlobalFrame(tab == .cart ? "cart-tab" : "tab-\(tab.rawValue)")
             .frame(maxWidth: .infinity)
             .padding(.vertical, AppSpacing.sm)
             .background {
@@ -188,7 +219,7 @@ private struct CartBadge: View {
 
     var body: some View {
         Text("\(min(count, 99))")
-            .font(.system(size: 10, weight: .bold, design: AppFont.design))
+            .font(.caption2.weight(.bold))
             .foregroundStyle(AppColor.onInk)
             .monospacedDigit()
             .padding(.horizontal, count > 9 ? 5 : 0)

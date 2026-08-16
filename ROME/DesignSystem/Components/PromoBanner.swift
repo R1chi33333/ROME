@@ -26,7 +26,7 @@ struct PromoBanner: View {
                 VStack(alignment: .leading, spacing: AppSpacing.sm) {
                     if let tag {
                         Text(tag.uppercased())
-                            .font(.system(size: 10, weight: .bold, design: AppFont.design))
+                            .font(.caption2.weight(.bold))
                             .tracking(0.8)
                             .foregroundStyle(AppColor.accent400)
                             .padding(.horizontal, AppSpacing.sm)
@@ -75,6 +75,9 @@ struct PromoBanner: View {
             .opacity(hasAppeared ? 1 : 0)
         }
         .buttonStyle(.pressableCard)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel([tag, headline, subheadline].compactMap { $0 }.joined(separator: ". "))
+        .accessibilityAddTraits(.isButton)
         .onAppear {
             withAnimation(.spring(response: 0.55, dampingFraction: 0.85).delay(0.1)) {
                 hasAppeared = true

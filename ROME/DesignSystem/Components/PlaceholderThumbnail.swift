@@ -82,6 +82,11 @@ struct PlaceholderThumbnail: View {
                         .foregroundStyle(AppColor.textSecondary)
                         .multilineTextAlignment(.center)
                         .minimumScaleFactor(0.7)
+                        // This block stands in for a photograph and keeps a
+                        // fixed aspect ratio, so its label cannot grow without
+                        // bound. It still scales — just not past the point
+                        // where it would overrun the frame.
+                        .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                         .padding(size.padding)
                 }
             }

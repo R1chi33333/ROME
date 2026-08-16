@@ -107,7 +107,13 @@ struct HomeView: View {
         .sheet(isPresented: $isPromptingSignIn) {
             AuthPromptView(reason: "save your pets and favourites")
         }
-        .task { await loadProducts() }
+        .task {
+            // Applied once, on the first appearance after onboarding.
+            if let species = auth.consumeOnboardingSpecies() {
+                selectedSpecies = species
+            }
+            await loadProducts()
+        }
         .task(id: selectedSpecies) { await loadProducts() }
         // A guest owns no pets, so there is nothing to fetch — and fetching
         // anyway would put someone else's sample pets in the greeting.
@@ -169,7 +175,8 @@ struct HomeView: View {
                     .font(AppFont.caption)
                     .foregroundStyle(AppColor.onInk)
                     .padding(.horizontal, AppSpacing.md)
-                    .frame(height: 42)
+                    .frame(minHeight: 42)
+                    .padding(.vertical, AppSpacing.sm)
                     .background(Capsule().fill(AppColor.ink))
             }
             .buttonStyle(.pressable)
@@ -201,7 +208,8 @@ struct HomeView: View {
             }
         }
         .padding(.horizontal, AppSpacing.lg)
-        .frame(height: 54)
+        .frame(minHeight: 54)
+        .padding(.vertical, AppSpacing.md)
         .background(
             RoundedRectangle(cornerRadius: AppRadius.base, style: .continuous)
                 .fill(AppColor.surface)
@@ -297,6 +305,21 @@ struct HomeView: View {
     }
 }
 
+/// Reads the shared namespace out of the environment and applies the zoom.
+/// A wrapper because `navigationTransition` has to be attached inside the
+/// destination builder, where the environment is available.
+private struct ProductDetailZoomWrapper: View {
+
+    let product: Product
+
+    @Environment(\.productZoomNamespace) private var zoomNamespace
+
+    var body: some View {
+        ProductDetailView(product: product)
+            .productZoomDestination(product, in: zoomNamespace)
+    }
+}
+
 /// Navigation payload for "this species, this category".
 struct CategorySelection: Hashable {
     let species: PetSpecies
@@ -309,7 +332,7 @@ extension View {
     func shopNavigationDestinations() -> some View {
         self
             .navigationDestination(for: Product.self) { product in
-                ProductDetailView(product: product)
+                ProductDetailZoomWrapper(product: product)
             }
             .navigationDestination(for: PetSpecies.self) { species in
                 CategoryDetailView(species: species)

@@ -141,14 +141,17 @@ struct MyPetsView: View {
 
     /// One tile per species the user owns, as a quick read of the household.
     private var summaryStrip: some View {
-        HStack(spacing: AppSpacing.md) {
-            statTile(value: "\(pets.pets.count)", label: pets.pets.count == 1 ? "pet" : "pets")
-            statTile(value: "\(pets.ownedSpecies.count)", label: "species")
-            statTile(
-                value: "\(pets.pets.filter(\.isNeutered).count)",
-                label: "neutered"
-            )
+        ViewThatFits(in: .horizontal) {
+            HStack(spacing: AppSpacing.md) { statTiles }
+            VStack(spacing: AppSpacing.sm) { statTiles }
         }
+    }
+
+    @ViewBuilder
+    private var statTiles: some View {
+        statTile(value: "\(pets.pets.count)", label: pets.pets.count == 1 ? "pet" : "pets")
+        statTile(value: "\(pets.ownedSpecies.count)", label: "species")
+        statTile(value: "\(pets.pets.filter(\.isNeutered).count)", label: "neutered")
     }
 
     private func statTile(value: String, label: String) -> some View {
@@ -161,6 +164,9 @@ struct MyPetsView: View {
             Text(label)
                 .font(AppFont.caption)
                 .foregroundStyle(AppColor.textSecondary)
+                // Without this the layout hyphenates into "speci / es".
+                .fixedSize(horizontal: false, vertical: true)
+                .multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, AppSpacing.lg)
@@ -183,7 +189,8 @@ struct MyPetsView: View {
             }
             .foregroundStyle(AppColor.textSecondary)
             .frame(maxWidth: .infinity)
-            .frame(height: 58)
+            .frame(minHeight: 58)
+            .padding(.vertical, AppSpacing.md)
             .background(
                 RoundedRectangle(cornerRadius: AppRadius.lg, style: .continuous)
                     .strokeBorder(

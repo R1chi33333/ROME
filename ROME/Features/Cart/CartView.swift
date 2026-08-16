@@ -141,7 +141,8 @@ struct CartView: View {
                 }
                 .foregroundStyle(AppColor.onInk)
                 .frame(maxWidth: .infinity)
-                .frame(height: 54)
+                .frame(minHeight: 54)
+                .padding(.vertical, AppSpacing.sm)
                 .background(
                     RoundedRectangle(cornerRadius: AppRadius.base, style: .continuous)
                         .fill(AppColor.ink)

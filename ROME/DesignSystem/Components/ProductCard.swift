@@ -28,17 +28,30 @@ struct ProductCard: View {
                 .font(AppFont.caption)
                 .foregroundStyle(AppColor.textTertiary)
 
-            HStack(alignment: .firstTextBaseline) {
-                Text(product.formattedPrice)
-                    .font(AppFont.price)
-                    .foregroundStyle(AppColor.accentText)
+            ViewThatFits(in: .horizontal) {
+                HStack(alignment: .firstTextBaseline) {
+                    priceLabel
+                    Spacer(minLength: AppSpacing.xs)
+                    RatingLabel(rating: product.rating)
+                }
 
-                Spacer(minLength: AppSpacing.xs)
-
-                RatingLabel(rating: product.rating)
+                VStack(alignment: .leading, spacing: 2) {
+                    priceLabel
+                    RatingLabel(rating: product.rating)
+                }
             }
         }
         .cardStyle(padding: AppSpacing.md)
+    }
+
+    private var priceLabel: some View {
+        Text(product.formattedPrice)
+            .font(AppFont.price)
+            .foregroundStyle(AppColor.accentText)
+            // A price is one token. Wrapping "$10.50" onto two lines makes it
+            // unreadable, so it shrinks instead.
+            .lineLimit(1)
+            .minimumScaleFactor(0.7)
     }
 }
 
@@ -54,6 +67,7 @@ struct ProductGridItem: View {
     let product: Product
 
     @Environment(FavoritesStore.self) private var favorites
+    @Environment(\.productZoomNamespace) private var zoomNamespace
 
     var body: some View {
         ZStack(alignment: .topTrailing) {
@@ -61,10 +75,22 @@ struct ProductGridItem: View {
                 ProductCard(product: product)
             }
             .buttonStyle(.pressableCard)
+            .productZoomSource(product, in: zoomNamespace)
             .accessibilityIdentifier("product-\(product.name)")
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(
+                "\(product.name), \(product.category.displayName), \(product.formattedPrice), rated \(product.rating.formatted(.number.precision(.fractionLength(1)))) out of 5"
+            )
+            .accessibilityAddTraits(.isButton)
 
             FavoriteButton(isFavorite: favorites.binding(for: product))
                 .padding(AppSpacing.md + AppSpacing.xs)
+        }
+        .scrollTransition(.interactive, axis: .vertical) { content, phase in
+            content
+                .opacity(phase.isIdentity ? 1 : 0.55)
+                .scaleEffect(phase.isIdentity ? 1 : 0.92)
+                .blur(radius: phase.isIdentity ? 0 : 1.4)
         }
         .accessibilityElement(children: .contain)
     }
@@ -93,7 +119,7 @@ struct ProductRow<Trailing: View>: View {
                 Text(product.name)
                     .font(AppFont.cardTitle)
                     .foregroundStyle(AppColor.textPrimary)
-                    .lineLimit(2)
+                    .lineLimit(3)
                     .fixedSize(horizontal: false, vertical: true)
 
                 if let variant {
@@ -105,6 +131,8 @@ struct ProductRow<Trailing: View>: View {
                 Text(product.formattedPrice)
                     .font(AppFont.subheadline)
                     .foregroundStyle(AppColor.accentText)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.7)
             }
 
             Spacer(minLength: AppSpacing.sm)

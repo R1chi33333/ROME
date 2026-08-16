@@ -28,9 +28,11 @@ struct CategoryChip: View {
                 Text(title)
                     .font(AppFont.chip)
                     .foregroundStyle(isSelected ? AppColor.accentText : AppColor.textSecondary)
+                    .fixedSize(horizontal: true, vertical: false)
             }
             .padding(.horizontal, AppSpacing.lg)
-            .frame(height: 44)
+            .padding(.vertical, AppSpacing.sm)
+            .frame(minHeight: 44)
             .background {
                 if isSelected {
                     Capsule()
