@@ -12,6 +12,16 @@ SwiftUI · iOS 26 · No third-party dependencies
 
 ---
 
+<div align="center">
+
+<img src="docs/demo.gif" width="300" alt="Walkthrough: browsing as a guest, pull to refresh, adding to the cart, and signing in at the My Pets gate">
+
+<sub><i>Guest browsing → pull to refresh → cart → the account gate at My Pets.<br>Recorded by a UI test driving the real app — see <a href="docs/record-demo.sh">docs/record-demo.sh</a>.</i></sub>
+
+</div>
+
+---
+
 |  |  |  |  |
 |:--:|:--:|:--:|:--:|
 | <img src="docs/screenshots/01-welcome.png" width="200"> | <img src="docs/screenshots/02-shop.png" width="200"> | <img src="docs/screenshots/03-categories.png" width="200"> | <img src="docs/screenshots/04-product.png" width="200"> |
@@ -145,6 +155,7 @@ xcodebuild test -scheme ROME \
 |---|---|
 | `FlowWalkthroughTests` | sign in → browse → product → cart → checkout → order placed |
 | `GuestModeTests` | browse as guest → blocked at My Pets → sign in → unlocked |
+| `DemoRecordingTests` | not a test — the paced script behind the walkthrough above |
 
 Several real defects surfaced this way rather than by inspection: the tab bar swallowing taps, a text field made invisible to the accessibility tree by `opacity(0)`, prices rendering as `US$10.50` under a non-US locale, and a duplicated product name on every card.
 
@@ -164,5 +175,5 @@ These are boundaries, not gaps — each one sits behind an interface chosen so t
 ---
 
 <div align="center">
-<sub>Built by <a href="https://github.com/">Yutong Jin</a></sub>
+<sub>Built by <a href="https://github.com/R1chi33333">Yutong Jin</a></sub>
 </div>
